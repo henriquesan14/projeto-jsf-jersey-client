@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+<ui:composition template="/templates/_mainTemplate.xhtml">
+	
+	<ui:define name="conteudo">
+	<h:form id="logout" style="margin-bottom:10px;">
+		<p:outputLabel value="Olá, "/>
+		<p:outputLabel value="#{sessionScope.usuario.email}"/>
+		<p:commandButton style="margin-left:10px;" action="#{loginBean.irFilmes}" value="Filmes" ajax="false"/>
+		<p:commandButton style="margin-left:10px;" value="Sair" action="#{loginBean.logout}" ajax="false"/>
+	</h:form>
+		<h:form id="cadastrarUsuario">
+		
+			<p:fieldset legend="Cadastro Usuários">
+				<p:messages id="messages" showDetail="true" closable="true">
+					<p:autoUpdate />
+				</p:messages>
+				<h:panelGrid columns="2">
+					<p:outputLabel for="inputEmail" value="Email" />
+					<p:inputText style="width:300px;" id="inputEmail" value="#{usuarioBean.usuario.email}"
+						required="true"
+						requiredMessage="Senhor Usuário informe o email do usuário" />
+				
+					<p:outputLabel for="inputSenha" value="Senha" />
+					<p:inputText style="width:300px;" id="inputSenha" value="#{usuarioBean.usuario.senha}"
+						required="true"
+						requiredMessage="Senhor Usuário informe a senha do usuário" />
+					<p:outputLabel for="inputPerfil" value="Perfil" />
+					<p:selectOneMenu id="inputPerfil" value="#{usuarioBean.usuario.perfil}">
+						<f:selectItem itemLabel="Usuário" itemValue="USER"/>
+						<f:selectItem itemLabel="Administrador" itemValue="ADMIN"/>
+					</p:selectOneMenu>
+					
+					<p:commandButton  value="#{usuarioBean.usuario.id == null ? 'Cadastrar' : 'Atualizar'}" ajax="false"
+						action="#{usuarioBean.cadastrarUsuario}" />
+					<p:commandButton value="Limpar"
+						action="#{usuarioBean.reset}" update="cadastrarUsuario" />
+	
+				</h:panelGrid>
+			</p:fieldset>
+		</h:form>
+		<br />
+		<h:form>
+			<p:fieldset legend="Listar Usuários">
+				<p:dataTable emptyMessage="Não há usuários cadastrados" id="tabelaUsuarios" value="#{usuarioBean.usuarios}" var="usuario">
+				<p:column>
+					<f:facet name="header">Email</f:facet>
+					#{usuario.email}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Perfil</f:facet>
+					#{usuario.perfil}
+				</p:column>
+				<p:column>
+					<p:panelGrid columns="2">
+						<p:commandButton action="#{usuarioBean.removerUsuario(usuario.id)}" icon="fa fa-fw fa-remove" title="Remover"
+						update="tabelaUsuarios" process="tabelaUsuarios"/>
+						<p:commandButton action="#{usuarioBean.alterarUsuario(usuario)}" icon="fa fa-fw fa-edit" title="Alterar"
+						update="cadastrarUsuario" process="tabelaUsuarios"/>
+					</p:panelGrid>
+				</p:column>
+			
+				</p:dataTable>
+			</p:fieldset>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+</html>
